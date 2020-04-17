@@ -1,0 +1,32 @@
+name: test
+
+on:
+  pull_request:
+    # ignore PR nervosnetwork/ckb#2019
+    branches-ignore: [ master ]
+  push:
+    branches: [ master, staging, staging2, trying ]
+
+env:
+  ci_rust_version: 1.41.0
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+        with:
+            toolchain: ${{ env.ci_rust_version }}
+            override: true
+
+      - name: Run Test
+        run: make test
