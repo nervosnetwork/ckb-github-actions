@@ -37,6 +37,7 @@ jobs:
           scoop install yasm
           clang --version
           yasm --version
+          echo "::add-path::%USERPROFILE%\scoop\shims"
         shell: powershell
 
       - name: Run Test
