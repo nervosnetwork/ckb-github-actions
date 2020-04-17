@@ -35,9 +35,9 @@ jobs:
           scoop install llvm
           scoop install msys2
           scoop install yasm
-          clang --version
-          yasm --version
-          echo "::add-path::%USERPROFILE%\scoop\shims"
+          echo "::set-output name=clang_version::$(clang --version)"
+          echo "::set-output name=yasm_version::$(yasm --version)"
+          echo "::add-path::${env:USERPROFILE}\scoop\shims"
         shell: powershell
 
       - name: Run Test
