@@ -28,5 +28,16 @@ jobs:
             toolchain: ${{ env.ci_rust_version }}
             override: true
 
+      - name: Install Windows Dependencies
+        if: startsWith(matrix.os, 'windows')
+        run: |
+          iwr -useb get.scoop.sh | iex
+          scoop install llvm
+          scoop install msys2
+          scoop install yasm
+          clang --version
+          yasm --version
+        shell: powershell
+
       - name: Run Test
         run: make test
