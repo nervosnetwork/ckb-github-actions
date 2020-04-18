@@ -47,10 +47,7 @@ jobs:
       - name: Install Ubuntu Dependencies
         if: startsWith(matrix.os, 'ubuntu')
         run: |
-          wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
-          sudo add-apt-repository "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-8 main"
-          sudo apt update -y
-          sudo apt install -y libssl-dev autoconf flex bison texinfo libtool clang-8 libc6-dev-i386
+          sudo apt install -y libssl-dev autoconf flex bison texinfo libtool
 
       - name: Run Test
         run: |
@@ -58,4 +55,4 @@ jobs:
           uname -a
           rustc --version
           cargo --version
-          make test
+          cargo test --verbose --verbose --verbose --all -- --nocapture
