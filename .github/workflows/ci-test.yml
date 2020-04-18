@@ -55,4 +55,5 @@ jobs:
           uname -a
           rustc --version
           cargo --version
+          cc --version
           cargo test --verbose --all -- --nocapture
