@@ -29,8 +29,8 @@ jobs:
       - name: Install Rust
         uses: actions-rs/toolchain@v1
         with:
-            toolchain: ${{ env.ci_rust_version }}
-            override: true
+          toolchain: ${{ env.ci_rust_version }}
+          override: true
 
       - name: Install Windows Dependencies
         if: startsWith(matrix.os, 'windows')
@@ -54,5 +54,4 @@ jobs:
 
       - name: Run Test
         run: |
-          cargo build --verbose
-          # make test
+          make test
