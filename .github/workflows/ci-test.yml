@@ -54,4 +54,8 @@ jobs:
 
       - name: Run Test
         run: |
+          lsb_release -a
+          uname -a
+          rustc --version
+          cargo --version
           make test
