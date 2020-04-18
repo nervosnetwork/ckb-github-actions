@@ -16,7 +16,8 @@ jobs:
       fail-fast: false
       matrix:
         # Use windows-2016 instead of 2019 because the compiliation of rocksdb failed.
-        os: [ubuntu-18.04, windows-2016, macOS-latest]
+        # os: [ubuntu-18.04, windows-2016, macOS-latest]
+        os: [ubuntu-18.04]
 
     runs-on: ${{ matrix.os }}
     # continue-on-error: ${{ startsWith(matrix.os, 'windows') }}
@@ -52,4 +53,6 @@ jobs:
           sudo apt install -y libssl-dev autoconf flex bison texinfo libtool clang-8 libc6-dev-i386
 
       - name: Run Test
-        run: make test
+        run: |
+          cargo build --verbose --verbose --verbose
+          make test
