@@ -1,4 +1,4 @@
-name: test
+name: ci-test
 
 on:
   pull_request:
@@ -13,11 +13,13 @@ env:
 jobs:
   test:
     strategy:
+      fail-fast: false
       matrix:
         # Use windows-2016 instead of 2019 because the compiliation of rocksdb failed.
-        os: [ubuntu-latest, windows-2016, macOS-latest]
+        os: [ubuntu-18.04, windows-2016, macOS-latest]
 
     runs-on: ${{ matrix.os }}
+    # continue-on-error: ${{ startsWith(matrix.os, 'windows') }}
 
     steps:
       - name: Checkout
@@ -40,6 +42,14 @@ jobs:
           echo "::set-output name=yasm_version::$(yasm --version)"
           echo "::add-path::${env:USERPROFILE}\scoop\shims"
         shell: powershell
+
+      - name: Install Ubuntu Dependencies
+        if: startsWith(matrix.os, 'ubuntu')
+        run: |
+          wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
+          sudo add-apt-repository "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-8 main"
+          sudo apt update -y
+          sudo apt install -y libssl-dev autoconf flex bison texinfo libtool clang-8 libc6-dev-i386
 
       - name: Run Test
         run: make test
