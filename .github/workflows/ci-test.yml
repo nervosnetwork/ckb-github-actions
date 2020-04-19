@@ -56,5 +56,5 @@ jobs:
           rustc --version
           cargo --version
           cc --version
-          grep -P '^core id\t' /proc/cpuinfo | sort -u | wc -l
+          cat /proc/cpuinfo
           free
