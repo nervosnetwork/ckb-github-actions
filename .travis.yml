@@ -1,0 +1,54 @@
+language: rust
+rust: 1.41.0
+dist: xenial
+sudo: true
+cache:
+  directories:
+    - $HOME/.cargo
+  timeout: 1024
+
+git:
+  depth: 2
+  submodules: false
+
+env:
+  global:
+    - RUST_BACKTRACE=full
+    - CKB_CLI_VERSION=v0.31.0
+
+addons:
+  apt:
+    sources:
+      - sourceline: "deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-8 main"
+        key_url: "https://apt.llvm.org/llvm-snapshot.gpg.key"
+    packages:
+      - libssl-dev
+      - autoconf
+      - flex
+      - bison
+      - texinfo
+      - libtool
+
+before_script:
+  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then ulimit -n 8192; fi
+
+script: make test
+
+before_cache:
+  - rm -rf $HOME/.cargo/registry
+
+if: 'type != pull_request or head_branch != develop'
+
+matrix:
+  include:
+    # We don't run tests, linters and quck check in fork branch, since they will be covered in PR.
+    - name: Tests on Linux
+      os: linux
+      script: |
+        lsb_release -a
+        uname -a
+        rustc --version
+        cargo --version
+        cc --version
+        grep -P '^core id\t' /proc/cpuinfo | sort -u | wc -l
+        free
