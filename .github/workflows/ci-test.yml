@@ -51,10 +51,4 @@ jobs:
 
       - name: Run Test
         run: |
-          lsb_release -a
-          uname -a
-          rustc --version
-          cargo --version
-          cc --version
-          cat /proc/cpuinfo
-          free
+          cargo test --verbose --all -j 2 -- --nocapture
