@@ -17,7 +17,7 @@ jobs:
       matrix:
         # Use windows-2016 instead of 2019 because the compiliation of rocksdb failed.
         # os: [ubuntu-18.04, windows-2016, macOS-latest]
-        os: [ubuntu-16.04]
+        os: [ubuntu-18.04]
 
     runs-on: ${{ matrix.os }}
     # continue-on-error: ${{ startsWith(matrix.os, 'windows') }}
@@ -56,4 +56,5 @@ jobs:
           rustc --version
           cargo --version
           cc --version
-          cargo test --verbose --all -- --nocapture
+          grep -P '^core id\t' /proc/cpuinfo | sort -u | wc -l
+          free
