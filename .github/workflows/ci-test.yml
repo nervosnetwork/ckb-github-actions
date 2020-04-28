@@ -1,0 +1,54 @@
+name: ci-test
+
+on:
+  pull_request:
+    # ignore PR nervosnetwork/ckb#2019
+    branches-ignore: [ master ]
+  push:
+    branches: [ master, staging, staging2, trying ]
+
+env:
+  ci_rust_version: 1.41.0
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        # Use windows-2016 instead of 2019 because the compiliation of rocksdb failed.
+        # os: [ubuntu-18.04, windows-2016, macOS-latest]
+        os: [ubuntu-18.04]
+
+    runs-on: ${{ matrix.os }}
+    # continue-on-error: ${{ startsWith(matrix.os, 'windows') }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ env.ci_rust_version }}
+          override: true
+
+      - name: Install Windows Dependencies
+        if: startsWith(matrix.os, 'windows')
+        run: |
+          iwr -useb get.scoop.sh | iex
+          scoop install llvm
+          scoop install msys2
+          scoop install yasm
+          echo "::set-output name=clang_version::$(clang --version)"
+          echo "::set-output name=yasm_version::$(yasm --version)"
+          echo "::add-path::${env:USERPROFILE}\scoop\shims"
+        shell: powershell
+
+      - name: Install Ubuntu Dependencies
+        if: startsWith(matrix.os, 'ubuntu')
+        run: |
+          sudo apt install -y libssl-dev autoconf flex bison texinfo libtool
+
+      - name: Run Test
+        run: |
+          cargo test --verbose --all -j 1 -- --nocapture
