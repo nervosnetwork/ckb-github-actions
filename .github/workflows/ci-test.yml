@@ -51,4 +51,4 @@ jobs:
 
       - name: Run Test
         run: |
-          cargo test --verbose --all -j 2 -- --nocapture
+          cargo test --verbose --all -j 1 -- --nocapture
